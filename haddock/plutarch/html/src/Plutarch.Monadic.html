@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Plutarch.Monadic</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Plutarch.Monadic.html#%3E%3E%3D"><span class="hs-operator">(&gt;&gt;=)</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Plutarch.Monadic.html#%3E%3E"><span class="hs-operator">(&gt;&gt;)</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Plutarch.Monadic.html#fail"><span class="hs-identifier">fail</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="../../../ghc-9.6.6/html/libraries/base-4.18.2.1/src/Prelude.html"><span class="hs-identifier">Prelude</span></a></span><span> </span><span class="hs-keyword">hiding</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="../../../ghc-9.6.6/html/libraries/base-4.18.2.1/src/Control.Monad.Fail.html#fail"><span class="hs-identifier">fail</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="../../../ghc-9.6.6/html/libraries/base-4.18.2.1/src/GHC.Base.html#%3E%3E"><span class="hs-operator">(&gt;&gt;)</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="../../../ghc-9.6.6/html/libraries/base-4.18.2.1/src/GHC.Base.html#%3E%3E%3D"><span class="hs-operator">(&gt;&gt;=)</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-4"></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="../../../ghc-9.6.6/html/libraries/base-4.18.2.1/src/Data.String.html"><span class="hs-identifier">Data.String</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="../../../ghc-9.6.6/html/libraries/base-4.18.2.1/src/Data.String.html#fromString"><span class="hs-identifier">fromString</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Plutarch.html"><span class="hs-identifier">Plutarch</span></a></span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-7"></span><span>  </span><span class="annot"><a href="Plutarch.Internal.html#Config"><span class="hs-identifier">Config</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Plutarch.Internal.html#Tracing"><span class="hs-identifier">Tracing</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-8"></span><span>  </span><span class="annot"><a href="Plutarch.Internal.html#TracingMode"><span class="hs-identifier">TracingMode</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Plutarch.Internal.html#DetTracing"><span class="hs-identifier">DetTracing</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-9"></span><span>  </span><span class="annot"><a href="Plutarch.Internal.html#pgetConfig"><span class="hs-identifier">pgetConfig</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-10"></span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-11"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Plutarch.Prelude.html"><span class="hs-identifier">Plutarch.Prelude</span></a></span><span>
+</span><span id="line-12"></span><span>
+</span><span id="line-13"></span><span class="annot"><span class="hs-comment">{- | Bind function used within do syntax.
+
+Enables elegant usage of 'pmatch' and similar.
+@P.do { y &lt;- x ; z }@ is equivalent to @x $ \y -&gt; z@.
+
+@
+  import qualified Plutarch.Monadic as P
+
+  f :: Term s (PTxInfo :--&gt; PBuiltinList (PAsData PTxInInfo))
+  f = plam $ \x -&gt; P.do
+    PTxInfo txInfoFields &lt;- pmatch x
+    pfromData $ pdhead # txInfoFields
+@
+-}</span></span><span>
+</span><span id="line-27"></span><span id="local-6989586621679565384"><span id="local-6989586621679565385"><span id="local-6989586621679565386"><span class="annot"><a href="Plutarch.Monadic.html#%3E%3E%3D"><span class="hs-operator hs-type">(&gt;&gt;=)</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679565384"><span class="hs-identifier hs-type">x</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Plutarch.Internal.html#Term"><span class="hs-identifier hs-type">Term</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679565385"><span class="hs-identifier hs-type">s</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679565386"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679565384"><span class="hs-identifier hs-type">x</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Plutarch.Internal.html#Term"><span class="hs-identifier hs-type">Term</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679565385"><span class="hs-identifier hs-type">s</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679565386"><span class="hs-identifier hs-type">a</span></a></span></span></span></span><span>
+</span><span id="line-28"></span><span id="%3E%3E%3D"><span class="annot"><span class="annottext">&gt;&gt;= :: forall x (s :: S) (a :: PType). (x -&gt; Term s a) -&gt; x -&gt; Term s a
+</span><a href="Plutarch.Monadic.html#%3E%3E%3D"><span class="hs-operator hs-var hs-var">(&gt;&gt;=)</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(x -&gt; Term s a) -&gt; x -&gt; Term s a
+forall a. a -&gt; a
+</span><a href="../../../ghc-9.6.6/html/libraries/base-4.18.2.1/src/GHC.Base.html#id"><span class="hs-identifier hs-var">id</span></a></span><span>
+</span><span id="line-29"></span><span>
+</span><span id="line-30"></span><span class="annot"><span class="hs-comment">{- | Forgetful bind function used within do syntax.
+
+Enables elegant usage of 'ptrace' and similar.
+@P.do { x ; y }@ is equivalent to @x y@.
+
+@
+  import qualified Plutarch.Monadic as P
+
+  P.do
+    ptrace &quot;yielding unit&quot;
+    pconstant ()
+@
+-}</span></span><span>
+</span><span id="line-43"></span><span id="local-6989586621679565421"><span id="local-6989586621679565422"><span id="local-6989586621679565423"><span class="annot"><a href="Plutarch.Monadic.html#%3E%3E"><span class="hs-operator hs-type">(&gt;&gt;)</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679565421"><span class="hs-identifier hs-type">x</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Plutarch.Internal.html#Term"><span class="hs-identifier hs-type">Term</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679565422"><span class="hs-identifier hs-type">s</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679565423"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679565421"><span class="hs-identifier hs-type">x</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Plutarch.Internal.html#Term"><span class="hs-identifier hs-type">Term</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679565422"><span class="hs-identifier hs-type">s</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679565423"><span class="hs-identifier hs-type">a</span></a></span></span></span></span><span>
+</span><span id="line-44"></span><span id="%3E%3E"><span class="annot"><span class="annottext">&gt;&gt; :: forall x (s :: S) (a :: PType). (x -&gt; Term s a) -&gt; x -&gt; Term s a
+</span><a href="Plutarch.Monadic.html#%3E%3E"><span class="hs-operator hs-var hs-var">(&gt;&gt;)</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(x -&gt; Term s a) -&gt; x -&gt; Term s a
+forall a. a -&gt; a
+</span><a href="../../../ghc-9.6.6/html/libraries/base-4.18.2.1/src/GHC.Base.html#id"><span class="hs-identifier hs-var">id</span></a></span><span>
+</span><span id="line-45"></span><span>
+</span><span id="line-46"></span><span class="annot"><span class="hs-comment">{- | Implicitly invoked upon pattern match failure within do syntax.
+
+@
+  import qualified Plutarch.Monadic as P
+
+  P.do
+    -- calls 'P.fail', traces an error message, and invokes 'perror'.
+    PTrue &lt;- pconstant False
+@
+-}</span></span><span>
+</span><span id="line-56"></span><span id="local-6989586621679565395"><span id="local-6989586621679565396"><span class="annot"><a href="Plutarch.Monadic.html#fail"><span class="hs-identifier hs-type">fail</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="../../../ghc-9.6.6/html/libraries/base-4.18.2.1/src/GHC.Base.html#String"><span class="hs-identifier hs-type">String</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Plutarch.Internal.html#Term"><span class="hs-identifier hs-type">Term</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679565395"><span class="hs-identifier hs-type">s</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679565396"><span class="hs-identifier hs-type">a</span></a></span></span></span><span>
+</span><span id="line-57"></span><span id="fail"><span class="annot"><span class="annottext">fail :: forall (s :: S) (a :: PType). String -&gt; Term s a
+</span><a href="Plutarch.Monadic.html#fail"><span class="hs-identifier hs-var hs-var">fail</span></a></span></span><span> </span><span id="local-6989586621679565428"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679565428"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Config -&gt; Term s a) -&gt; Term s a
+forall (s :: S) (a :: PType). (Config -&gt; Term s a) -&gt; Term s a
+</span><a href="Plutarch.Internal.html#pgetConfig"><span class="hs-identifier hs-var">pgetConfig</span></a></span><span> </span><span class="annot"><span class="annottext">((Config -&gt; Term s a) -&gt; Term s a)
+-&gt; (Config -&gt; Term s a) -&gt; Term s a
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><a href="../../../ghc-9.6.6/html/libraries/base-4.18.2.1/src/GHC.Base.html#%24"><span class="hs-operator hs-var">$</span></a></span><span> </span><span class="hs-glyph">\</span><span class="hs-glyph">case</span><span>
+</span><span id="line-58"></span><span>  </span><span class="annot"><a href="Plutarch.Internal.html#Tracing"><span class="hs-identifier hs-type">Tracing</span></a></span><span> </span><span class="annot"><span class="annottext">LogLevel
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">TracingMode
+</span><a href="Plutarch.Internal.html#DetTracing"><span class="hs-identifier hs-var">DetTracing</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Term s PString -&gt; Term s a
+forall (a :: PType) (s :: S). Term s PString -&gt; Term s a
+</span><a href="Plutarch.Trace.html#ptraceInfoError"><span class="hs-identifier hs-var">ptraceInfoError</span></a></span><span> </span><span class="annot"><span class="annottext">Term s PString
+</span><span class="hs-string">&quot;Pattern matching failure in QualifiedDo syntax&quot;</span></span><span>
+</span><span id="line-59"></span><span>  </span><span class="annot"><span class="annottext">Config
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Term s PString -&gt; Term s a
+forall (a :: PType) (s :: S). Term s PString -&gt; Term s a
+</span><a href="Plutarch.Trace.html#ptraceInfoError"><span class="hs-identifier hs-var">ptraceInfoError</span></a></span><span> </span><span class="annot"><span class="annottext">(Term s PString -&gt; Term s a) -&gt; Term s PString -&gt; Term s a
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><a href="../../../ghc-9.6.6/html/libraries/base-4.18.2.1/src/GHC.Base.html#%24"><span class="hs-operator hs-var">$</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; Term s PString
+forall a. IsString a =&gt; String -&gt; a
+</span><a href="../../../ghc-9.6.6/html/libraries/base-4.18.2.1/src/Data.String.html#fromString"><span class="hs-identifier hs-var">fromString</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679565428"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><span id="line-60"></span></pre></body></html>
